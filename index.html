@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VueCommerce - Local Dev</title>
+    <!-- Thêm font chữ giống giao diện thật -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- MOCK DATA: Giả lập dữ liệu WordPress đổ xuống -->
+    <script>
+      window.wpVueTheme = {
+        restUrl: 'http://localhost:8080/wp-json/', // Trỏ về WordPress thật của bạn nếu có (đổi post nếu khác)
+        homeUrl: '/',
+        checkoutUrl: '/checkout',
+        cartUrl: '/cart',
+        currency: '₫',
+        wcActive: true,
+        // Bật các cờ này lên để test các component
+        isHome: true, 
+        isBlog: false,
+        isShop: false,
+        isContact: false,
+        isProduct: false
+      };
+
+      window.__PRODUCT_DATA__ = {
+        id: 1,
+        name: "Sản phẩm Demo",
+        price: "150000",
+        regular_price: "200000",
+        sale_price: "150000",
+        on_sale: true,
+        description: "Đây là mô tả sản phẩm giả lập để test giao diện.",
+        stock_status: "instock",
+        attributes: [
+          { name: "Màu sắc", options: ["Đỏ", "Đen"] }
+        ],
+        images: [
+          { src: "https://via.placeholder.com/600", alt: "Demo" }
+        ],
+        related_products: []
+      };
+    </script>
+  </head>
+  <body class="bg-dark-900 text-dark-50 font-sans">
+    
+    <div id="vue-header"></div>
+    
+    <main id="vue-main">
+      <script>
+        // Render components conditionally based on flags to isolate pages
+        if (window.wpVueTheme.isHome) {
+          document.write(`
+            <div id="vue-hero"></div>
+            <div id="vue-new-products"></div>
+            <div id="vue-category-products"></div>
+            <div id="vue-product-swiper"></div>
+            <div id="vue-latest-posts"></div>
+            <div id="vue-newsletter"></div>
+          `);
+        }
+        
+        if (window.wpVueTheme.isShop) {
+          document.write('<div id="vue-product-grid"></div>');
+        }
+
+        if (window.wpVueTheme.isProduct) {
+          document.write('<div id="vue-product-detail"></div>');
+        }
+
+        if (window.wpVueTheme.isContact) {
+          document.write('<div id="vue-contact"></div>');
+        }
+
+        if (window.wpVueTheme.isBlog) {
+          document.write('<div id="vue-post-list"></div>');
+        }
+      </script>
+    </main>
+
+    <div id="vue-footer"></div>
+
+    <!-- Gọi code Vue -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
