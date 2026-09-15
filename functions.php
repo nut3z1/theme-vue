@@ -85,51 +85,61 @@ function vuecommerce_scripts() {
     // Main theme stylesheet (WordPress metadata only)
     wp_enqueue_style('vuecommerce-style', get_stylesheet_uri(), array(), VUECOMMERCE_VERSION);
 
-    // Vite compiled CSS
-    $css_file = VUECOMMERCE_DIR . '/assets/css/main.css';
-    if (file_exists($css_file)) {
-        wp_enqueue_style(
-            'vuecommerce-app',
-            VUECOMMERCE_URI . '/assets/css/main.css',
-            array('vuecommerce-google-fonts'),
-            VUECOMMERCE_VERSION
-        );
+    // Define VUECOMMERCE_DEV in wp-config.php to enable Vite Dev Server HMR directly in WordPress
+    $is_dev = defined('VUECOMMERCE_DEV') && VUECOMMERCE_DEV;
+
+    if ($is_dev) {
+        // Load Vite Dev Server Client
+        wp_enqueue_script('vite-client', 'http://localhost:3000/@vite/client', array(), null, false);
+        // Load Vue Entry from Vite Dev Server
+        wp_enqueue_script('vuecommerce-app', 'http://localhost:3000/src/main.js', array(), null, true);
+    } else {
+        // Vite compiled CSS
+        $css_file = VUECOMMERCE_DIR . '/assets/css/main.css';
+        if (file_exists($css_file)) {
+            wp_enqueue_style(
+                'vuecommerce-app',
+                VUECOMMERCE_URI . '/assets/css/main.css',
+                array('vuecommerce-google-fonts'),
+                VUECOMMERCE_VERSION
+            );
+        }
+
+        // Vite compiled JS
+        $js_file = VUECOMMERCE_DIR . '/assets/js/main.js';
+        if (file_exists($js_file)) {
+            wp_enqueue_script(
+                'vuecommerce-app',
+                VUECOMMERCE_URI . '/assets/js/main.js',
+                array(),
+                VUECOMMERCE_VERSION,
+                true
+            );
+        }
     }
 
-    // Vite compiled JS
-    $js_file = VUECOMMERCE_DIR . '/assets/js/main.js';
-    if (file_exists($js_file)) {
-        wp_enqueue_script(
-            'vuecommerce-app',
-            VUECOMMERCE_URI . '/assets/js/main.js',
-            array(),
-            VUECOMMERCE_VERSION,
-            true
-        );
-
-        // Pass WordPress data to Vue
-        wp_localize_script('vuecommerce-app', 'wpVueTheme', array(
-            'restUrl'      => esc_url_raw(rest_url()),
-            'nonce'        => wp_create_nonce('wp_rest'),
-            'themeUrl'     => VUECOMMERCE_URI,
-            'homeUrl'      => home_url('/'),
-            'siteTitle'    => get_bloginfo('name'),
-            'siteDesc'     => get_bloginfo('description'),
-            'isHome'       => is_front_page(),
-            'isShop'       => function_exists('is_shop') ? is_shop() : false,
-            'isProduct'    => function_exists('is_product') ? is_product() : false,
-            'isBlog'       => is_home() || is_archive(),
-            'isContact'    => is_page('contact') || is_page('lien-he'),
-            'isSingle'     => is_singular('post'),
-            'currentPage'  => get_query_var('paged') ? get_query_var('paged') : 1,
-            'postId'       => get_the_ID(),
-            'wcActive'     => class_exists('WooCommerce'),
-            'cartUrl'      => function_exists('wc_get_cart_url') ? wc_get_cart_url() : '',
-            'checkoutUrl'  => function_exists('wc_get_checkout_url') ? wc_get_checkout_url() : '',
-            'currency'     => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '₫',
-            'primaryMenu'  => vuecommerce_get_menu_items('primary'),
-        ));
-    }
+    // Pass WordPress data to Vue (runs for both Dev and Prod)
+    wp_localize_script('vuecommerce-app', 'wpVueTheme', array(
+        'restUrl'      => esc_url_raw(rest_url()),
+        'nonce'        => wp_create_nonce('wp_rest'),
+        'themeUrl'     => VUECOMMERCE_URI,
+        'homeUrl'      => home_url('/'),
+        'siteTitle'    => get_bloginfo('name'),
+        'siteDesc'     => get_bloginfo('description'),
+        'isHome'       => is_front_page(),
+        'isShop'       => function_exists('is_shop') ? is_shop() : false,
+        'isProduct'    => function_exists('is_product') ? is_product() : false,
+        'isBlog'       => is_home() || is_archive(),
+        'isContact'    => is_page('contact') || is_page('lien-he'),
+        'isSingle'     => is_singular('post'),
+        'currentPage'  => get_query_var('paged') ? get_query_var('paged') : 1,
+        'postId'       => get_the_ID(),
+        'wcActive'     => class_exists('WooCommerce'),
+        'cartUrl'      => function_exists('wc_get_cart_url') ? wc_get_cart_url() : '',
+        'checkoutUrl'  => function_exists('wc_get_checkout_url') ? wc_get_checkout_url() : '',
+        'currency'     => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '₫',
+        'primaryMenu'  => vuecommerce_get_menu_items('primary'),
+    ));
 }
 add_action('wp_enqueue_scripts', 'vuecommerce_scripts');
 
