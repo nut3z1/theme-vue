@@ -1,8 +1,7 @@
 <template>
-  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-          :class="[scrolled ? 'bg-dark-900/95 backdrop-blur-xl shadow-lg shadow-dark-200/10 border-b border-dark-700/50' : 'bg-transparent']">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 lg:h-20">
+  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20 ">
         <!-- Logo -->
         <a :href="homeUrl" class="flex items-center gap-3 group">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-shadow">
@@ -95,7 +94,7 @@
     <!-- Mobile Menu -->
     <transition name="slide-down">
       <div v-if="mobileMenuOpen" class="lg:hidden absolute top-full left-0 right-0 bg-dark-900/98 backdrop-blur-xl border-b border-dark-800 shadow-2xl">
-        <nav class="max-w-7xl mx-auto px-4 py-4 space-y-1">
+        <nav class="max-w-8xl mx-auto px-4 py-4 space-y-1 bg-white h-[calc(100vh-100px)]" :class="[mobileMenuOpen ? 'border-t border-solid border-primary-50' : '']">
           <a v-for="item in menuItems"
              :key="item.slug"
              :href="item.url"
@@ -138,6 +137,7 @@ const menuItems = wpData.primaryMenu || [
   { title: 'Trang chủ', url: '/', slug: 'home' },
   { title: 'Sản phẩm', url: '/shop', slug: 'shop' },
   { title: 'Bài viết', url: '/blog', slug: 'blog' },
+  { title: 'Video', url: '/video', slug: 'video' },
   { title: 'Liên hệ', url: '/lien-he', slug: 'contact' },
 ];
 
@@ -146,6 +146,7 @@ function isActive(slug) {
   if (slug === 'home') return path === '/' || wpData.isHome;
   if (slug === 'shop') return path.includes('/shop') || path.includes('/product') || wpData.isShop || wpData.isProduct;
   if (slug === 'blog') return path.includes('/blog') || path.includes('/category') || wpData.isBlog;
+  if (slug === 'video') return path.includes('/video');
   if (slug === 'contact') return path.includes('/contact') || path.includes('/lien-he') || wpData.isContact;
   return path.includes(`/${slug}`);
 }

@@ -7,6 +7,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      maxWidth: {
+      '8xl': '1440px',
+      },
       colors: {
         primary: {
           50: '#e3f2fd',

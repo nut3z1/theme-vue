@@ -204,7 +204,7 @@
    WooCommerce Overrides
    ============================ */
 .woocommerce-notices-wrapper {
-  @apply max-w-7xl mx-auto px-4;
+  @apply max-w-8xl mx-auto px-4;
 }
 
 .woocommerce-message,

@@ -1,6 +1,6 @@
 <template>
   <section class="py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
         <!-- Banner Lớn (2/3 width) -->
         <div class="lg:col-span-2 relative group rounded-2xl overflow-hidden bg-dark-800 border border-dark-700 hover:border-primary-500/30 transition-all cursor-pointer"

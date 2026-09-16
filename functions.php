@@ -154,6 +154,7 @@ function vuecommerce_get_menu_items($location) {
             array('title' => 'Trang chủ', 'url' => home_url('/'), 'slug' => 'home'),
             array('title' => 'Sản phẩm', 'url' => function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/shop'), 'slug' => 'shop'),
             array('title' => 'Bài viết', 'url' => get_permalink(get_option('page_for_posts')), 'slug' => 'blog'),
+            array('title' => 'Video', 'url' => home_url('/video'), 'slug' => 'video'),
             array('title' => 'Liên hệ', 'url' => home_url('/lien-he'), 'slug' => 'contact'),
         );
     }
@@ -323,3 +324,70 @@ function vuecommerce_rest_featured_image($data, $post, $context) {
     return $data;
 }
 add_filter('rest_prepare_post', 'vuecommerce_rest_featured_image', 10, 3);
+
+/**
+ * Register REST API proxy endpoint for YouTube
+ * Hides YOUTUBE_API_KEY on server side, Vue calls /wp-json/vuecommerce/v1/youtube
+ */
+function vuecommerce_register_youtube_endpoint() {
+    register_rest_route('vuecommerce/v1', '/youtube', array(
+        'methods'             => 'GET',
+        'callback'            => 'vuecommerce_youtube_proxy',
+        'permission_callback' => '__return_true',
+        'args'                => array(
+            'pageToken' => array(
+                'required'          => false,
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+        ),
+    ));
+}
+add_action('rest_api_init', 'vuecommerce_register_youtube_endpoint');
+
+/**
+ * YouTube proxy callback
+ */
+function vuecommerce_youtube_proxy($request) {
+    $api_key    = defined('YOUTUBE_API_KEY') ? YOUTUBE_API_KEY : get_option('vuecommerce_youtube_api_key', 'AIzaSyBFpbLU1xhVOLzd2LSF73HDxr3VvvxWFeg');
+    $channel_id = defined('YOUTUBE_CHANNEL_ID') ? YOUTUBE_CHANNEL_ID : get_option('vuecommerce_youtube_channel_id', 'UUoXst0FTqCB7K52dU47cGqw');
+    $page_token = $request->get_param('pageToken');
+    $per_page   = intval($request->get_param('maxResults') ?: 10);
+    $per_page   = max(1, min(50, $per_page)); // clamp 1-50
+
+    if (empty($api_key)) {
+        return new WP_Error(
+            'missing_api_key',
+            'YouTube API key chưa được cấu hình.',
+            array('status' => 500)
+        );
+    }
+
+    $url = add_query_arg(
+        array_filter(array(
+            'key'        => $api_key,
+            'playlistId'  => $channel_id,
+            'part'       => 'snippet,id',
+            'order'      => 'date',
+            'maxResults' => $per_page,
+            'pageToken'  => $page_token ?: null,
+            'type'       => 'video',
+        )),
+        'https://www.googleapis.com/youtube/v3/playlistItems'
+    );
+
+    $response = wp_remote_get($url, array('timeout' => 15));
+
+    if (is_wp_error($response)) {
+        return new WP_Error('youtube_fetch_failed', 'Lỗi khi lấy dữ liệu từ YouTube.', array('status' => 500));
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+
+    if (empty($data) || isset($data['error'])) {
+        $msg = $data['error']['message'] ?? 'Lỗi không xác định từ YouTube API.';
+        return new WP_Error('youtube_api_error', $msg, array('status' => 502));
+    }
+
+    return rest_ensure_response($data);
+}

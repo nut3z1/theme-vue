@@ -1,6 +1,6 @@
 <template>
   <section class="py-12 overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="flex items-center justify-between mb-8">
         <div>

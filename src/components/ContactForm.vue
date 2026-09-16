@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-screen py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="text-center mb-14">
         <h1 class="text-3xl sm:text-4xl font-display font-bold text-dark-50 mb-4">

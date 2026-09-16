@@ -1,6 +1,6 @@
 <template>
   <section class="py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="flex items-center justify-between mb-8">
         <div>
@@ -71,7 +71,7 @@
         </a>
 
         <!-- 4 Small Posts (3 columns, 2 rows) -->
-        <template v-for="(post, index) in posts.slice(1, 5)" :key="post.id">
+        <template v-for="(post) in posts.slice(1, 5)" :key="post.id">
           <a :href="post.link"
              class="group flex lg:flex-col bg-dark-800/50 rounded-2xl border border-dark-700 overflow-hidden hover:border-primary-500/30 transition-all">
             <!-- Image -->

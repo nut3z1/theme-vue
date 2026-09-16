@@ -29,11 +29,15 @@
                placeholder="Nhập email của bạn"
                class="flex-1 px-5 py-3.5 bg-dark-800 border border-dark-600 rounded-xl text-dark-100 placeholder-dark-500 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-sm">
         <button type="submit"
-                :disabled="subscribed"
-                class="px-8 py-3.5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-xl shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-80 whitespace-nowrap text-sm">
-          {{ subscribed ? 'Đã đăng ký ✓' : 'Đăng ký' }}
+                :disabled="subscribed || isLoading"
+                class="px-8 py-3.5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-xl shadow-glow hover:shadow-glow-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-80 disabled:cursor-not-allowed whitespace-nowrap text-sm">
+          {{ subscribed ? 'Đã đăng ký ✓' : (isLoading ? 'Đang gửi...' : 'Đăng ký') }}
         </button>
       </form>
+
+      <p v-if="errorMessage" class="text-sm text-red-500 mt-2">
+        {{ errorMessage }}
+      </p>
 
       <p class="text-xs text-dark-500 mt-4">
         Chúng tôi tôn trọng quyền riêng tư của bạn. Hủy đăng ký bất cứ lúc nào.
@@ -47,14 +51,46 @@ import { ref } from 'vue';
 
 const email = ref('');
 const subscribed = ref(false);
+const isLoading = ref(false);
+const errorMessage = ref('');
 
-function handleSubscribe() {
+async function handleSubscribe() {
   if (!email.value.trim()) return;
-  // In production, this would call an API endpoint
-  subscribed.value = true;
-  setTimeout(() => {
-    email.value = '';
-    subscribed.value = false;
-  }, 3000);
+  
+  isLoading.value = true;
+  errorMessage.value = '';
+
+  try {
+    // 1. Thay '123' bằng ID của Contact Form 7 của bạn
+    const formId = '123';
+    
+    const formData = new FormData();
+    // 2. Tên trường 'your-email' phải khớp với thẻ [email* your-email] trong CF7
+    formData.append('your-email', email.value);
+
+    // Gửi request tới Contact Form 7 REST API của WordPress
+    const response = await fetch(`/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'mail_sent') {
+      subscribed.value = true;
+      setTimeout(() => {
+        email.value = '';
+        subscribed.value = false;
+      }, 3000);
+    } else {
+      // API CF7 trả về lỗi validation hoặc cấu hình mail
+      errorMessage.value = data.message || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.';
+    }
+  } catch (error) {
+    console.error('Lỗi khi gửi form:', error);
+    errorMessage.value = 'Không thể kết nối đến máy chủ.';
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>

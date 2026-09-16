@@ -24,6 +24,7 @@ import NewProducts from './components/NewProducts.vue';
 import CategoryProducts from './components/CategoryProducts.vue';
 import ProductSwiper from './components/ProductSwiper.vue';
 import LatestPosts from './components/LatestPosts.vue';
+import VideoContent from './components/VideoContent.vue';
 
 /**
  * Mount a Vue component to a DOM element if it exists
@@ -87,6 +88,11 @@ function init() {
   // Single Product - Product Detail
   if (wpData.isProduct || document.querySelector('#vue-product-detail')) {
     mountComponent('#vue-product-detail', ProductDetail);
+  }
+
+  // Video page
+  if (document.querySelector('#vue-video')) {
+    mountComponent('#vue-video', VideoContent);
   }
 
   console.log('[VueCommerce] Theme initialized ✓');

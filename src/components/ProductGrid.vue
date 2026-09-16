@@ -1,6 +1,6 @@
 <template>
   <section class="min-h-screen py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Page Header -->
       <div class="mb-10">
         <h1 class="text-3xl sm:text-4xl font-display font-bold text-dark-50 mb-3">
@@ -98,35 +98,12 @@
       </div>
 
       <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-12">
-        <button @click="goToPage(currentPage - 1)"
-                :disabled="currentPage <= 1"
-                class="p-2.5 rounded-xl border border-dark-700 text-dark-400 hover:border-primary-500/50 hover:text-primary-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-        </button>
-
-        <template v-for="page in paginationPages" :key="page">
-          <button v-if="page !== '...'"
-                  @click="goToPage(page)"
-                  class="min-w-[40px] h-10 px-3 rounded-xl text-sm font-medium transition-all"
-                  :class="page === currentPage 
-                    ? 'bg-primary-500 text-white shadow-glow' 
-                    : 'border border-dark-700 text-dark-400 hover:border-primary-500/50 hover:text-primary-400'">
-            {{ page }}
-          </button>
-          <span v-else class="px-2 text-dark-500">...</span>
-        </template>
-
-        <button @click="goToPage(currentPage + 1)"
-                :disabled="currentPage >= totalPages"
-                class="p-2.5 rounded-xl border border-dark-700 text-dark-400 hover:border-primary-500/50 hover:text-primary-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </button>
-      </div>
+      <AppPagination
+        v-model="currentPage"
+        :total-pages="totalPages"
+        :disabled="loading"
+        @update:model-value="goToPage"
+      />
 
       <!-- Loading overlay for page transitions -->
       <div v-if="loading && products.length > 0" 
@@ -141,6 +118,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useProducts } from '../composables/useProducts.js';
 import ProductCard from './ProductCard.vue';
+import AppPagination from './AppPagination.vue';
 
 const { products, loading, error, totalProducts, totalPages, currentPage, categories, hasProducts, fetchProducts, fetchCategories } = useProducts();
 
@@ -148,27 +126,6 @@ const searchQuery = ref('');
 const selectedCategory = ref('');
 const sortBy = ref('date');
 let searchTimeout = null;
-
-// Pagination
-const paginationPages = computed(() => {
-  const pages = [];
-  const total = totalPages.value;
-  const current = currentPage.value;
-
-  if (total <= 7) {
-    for (let i = 1; i <= total; i++) pages.push(i);
-  } else {
-    pages.push(1);
-    if (current > 3) pages.push('...');
-    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
-      pages.push(i);
-    }
-    if (current < total - 2) pages.push('...');
-    pages.push(total);
-  }
-
-  return pages;
-});
 
 function getSortParams() {
   switch (sortBy.value) {
