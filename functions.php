@@ -367,7 +367,6 @@ function vuecommerce_youtube_proxy($request) {
             'key'        => $api_key,
             'playlistId'  => $channel_id,
             'part'       => 'snippet,id',
-            'order'      => 'date',
             'maxResults' => $per_page,
             'pageToken'  => $page_token ?: null,
             'type'       => 'video',
