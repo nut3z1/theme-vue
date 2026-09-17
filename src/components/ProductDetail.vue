@@ -385,7 +385,7 @@
                 <ul class="text-sm text-[#696767] space-y-3">
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2023/08/icon-so.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -394,7 +394,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2023/08/icon-so.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -406,7 +406,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2023/08/icon-so.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -418,7 +418,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2023/08/icon-so.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -429,7 +429,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2023/08/icon-so.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
