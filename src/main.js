@@ -13,9 +13,7 @@ import AppHeader from './components/AppHeader.vue';
 import AppFooter from './components/AppFooter.vue';
 import CartWidget from './components/CartWidget.vue';
 import HeroSection from './components/HeroSection.vue';
-import FeaturedProducts from './components/FeaturedProducts.vue';
 import PostList from './components/PostList.vue';
-import PostCard from './components/PostCard.vue';
 import ContactForm from './components/ContactForm.vue';
 import ProductGrid from './components/ProductGrid.vue';
 import ProductDetail from './components/ProductDetail.vue';
@@ -25,6 +23,7 @@ import CategoryProducts from './components/CategoryProducts.vue';
 import ProductSwiper from './components/ProductSwiper.vue';
 import LatestPosts from './components/LatestPosts.vue';
 import VideoContent from './components/VideoContent.vue';
+import InstantSearch from './components/InstantSearch.vue';
 
 /**
  * Mount a Vue component to a DOM element if it exists
@@ -63,9 +62,9 @@ function init() {
   // Home page
   if (wpData.isHome || document.querySelector('#vue-hero')) {
     mountComponent('#vue-hero', HeroSection);
+    mountComponent('#vue-product-swiper', ProductSwiper);
     mountComponent('#vue-new-products', NewProducts);
     mountComponent('#vue-category-products', CategoryProducts);
-    mountComponent('#vue-product-swiper', ProductSwiper);
     mountComponent('#vue-latest-posts', LatestPosts);
     mountComponent('#vue-newsletter', NewsletterSignup);
   }
@@ -93,6 +92,11 @@ function init() {
   // Video page
   if (document.querySelector('#vue-video')) {
     mountComponent('#vue-video', VideoContent);
+  }
+
+  // Instant Search Component
+  if (document.querySelector('#vue-instant-search')) {
+    mountComponent('#vue-instant-search', InstantSearch);
   }
 
   console.log('[VueCommerce] Theme initialized ✓');

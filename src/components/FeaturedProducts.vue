@@ -70,7 +70,7 @@ import ProductCard from './ProductCard.vue';
 const { products, loading, error, hasProducts, fetchFeaturedProducts } = useProducts();
 
 const wpData = window.wpVueTheme || {};
-const shopUrl = wpData.wcActive ? (wpData.homeUrl || '/') + 'shop' : '#';
+const shopUrl = wpData.wcActive ? (wpData.shopUrl || ((wpData.homeUrl || '/') + 'cua-hang')) : '#';
 
 onMounted(() => {
   fetchFeaturedProducts(8);

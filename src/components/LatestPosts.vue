@@ -1,6 +1,7 @@
 <template>
-  <section class="py-12">
-    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="py-6">
+    <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 ">
+      <div class='bg-dark-950 rounded-xl px-4 py-7'>
       <!-- Section Header -->
       <div class="flex items-center justify-between mb-8">
         <div>
@@ -71,33 +72,32 @@
         </a>
 
         <!-- 4 Small Posts (3 columns, 2 rows) -->
-        <template v-for="(post) in posts.slice(1, 5)" :key="post.id">
-          <a :href="post.link"
-             class="group flex lg:flex-col bg-dark-800/50 rounded-2xl border border-dark-700 overflow-hidden hover:border-primary-500/30 transition-all">
-            <!-- Image -->
-            <div class="relative w-28 sm:w-32 lg:w-full shrink-0 overflow-hidden bg-dark-800">
-              <div class="aspect-square lg:aspect-[4/3]">
-                <img v-if="post.featuredImage"
-                     :src="post.featuredImage"
-                     :alt="post.title"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                     loading="lazy">
-                <div v-else class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-500/5 to-secondary-500/5">
-                  <svg class="w-8 h-8 text-dark-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7"/>
-                  </svg>
-                </div>
+        <a v-for="(post) in posts.slice(1, 5)" :key="post.id"
+           :href="post.link"
+           class="group flex lg:flex-col bg-dark-800/50 rounded-2xl border border-dark-700 overflow-hidden hover:border-primary-500/30 transition-all">
+          <!-- Image -->
+          <div class="relative w-28 sm:w-32 lg:w-full shrink-0 overflow-hidden bg-dark-800">
+            <div class="aspect-square lg:aspect-[4/3]">
+              <img v-if="post.featuredImage"
+                   :src="post.featuredImage"
+                   :alt="post.title"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                   loading="lazy">
+              <div v-else class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-500/5 to-secondary-500/5">
+                <svg class="w-8 h-8 text-dark-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7"/>
+                </svg>
               </div>
             </div>
-            <!-- Content -->
-            <div class="flex-1 p-3 lg:p-4 flex flex-col justify-center">
-              <time class="text-[10px] text-dark-500 mb-1">{{ post.dateFormatted }}</time>
-              <h3 class="text-sm font-semibold text-dark-100 group-hover:text-primary-400 transition-colors line-clamp-2 leading-snug">
-                {{ post.title }}
-              </h3>
-            </div>
-          </a>
-        </template>
+          </div>
+          <!-- Content -->
+          <div class="flex-1 p-3 lg:p-4 flex flex-col justify-center">
+            <time class="text-[10px] text-dark-500 mb-1">{{ post.dateFormatted }}</time>
+            <h3 class="text-sm font-semibold text-dark-100 group-hover:text-primary-400 transition-colors line-clamp-2 leading-snug">
+              {{ post.title }}
+            </h3>
+          </div>
+        </a>
       </div>
 
       <!-- Empty -->
@@ -111,6 +111,8 @@
           Xem tất cả bài viết →
         </a>
       </div>
+      </div>
+      
     </div>
   </section>
 </template>
@@ -121,7 +123,7 @@ import axios from 'axios';
 
 const wpData = window.wpVueTheme || {};
 const restUrl = wpData.restUrl || '/wp-json/';
-const blogUrl = wpData.homeUrl ? wpData.homeUrl + 'blog' : '/blog';
+const blogUrl = wpData.homeUrl ? wpData.homeUrl + 'tin-tuc' : '/tin-tuc';
 
 const posts = ref([]);
 const loading = ref(true);

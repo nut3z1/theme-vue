@@ -113,7 +113,7 @@ const currentYear = new Date().getFullYear();
 const quickLinks = [
   { title: 'Trang chủ', url: homeUrl },
   { title: 'Sản phẩm', url: `${homeUrl}shop` },
-  { title: 'Bài viết', url: `${homeUrl}blog` },
+  { title: 'Bài viết', url: `${homeUrl}tin-tuc` },
   { title: 'Liên hệ', url: `${homeUrl}lien-he` },
 ];
 

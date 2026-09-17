@@ -135,6 +135,7 @@ function vuecommerce_scripts() {
         'currentPage'  => get_query_var('paged') ? get_query_var('paged') : 1,
         'postId'       => get_the_ID(),
         'wcActive'     => class_exists('WooCommerce'),
+        'shopUrl'      => function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '',
         'cartUrl'      => function_exists('wc_get_cart_url') ? wc_get_cart_url() : '',
         'checkoutUrl'  => function_exists('wc_get_checkout_url') ? wc_get_checkout_url() : '',
         'currency'     => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '₫',
@@ -153,7 +154,7 @@ function vuecommerce_get_menu_items($location) {
         return array(
             array('title' => 'Trang chủ', 'url' => home_url('/'), 'slug' => 'home'),
             array('title' => 'Sản phẩm', 'url' => function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/shop'), 'slug' => 'shop'),
-            array('title' => 'Bài viết', 'url' => get_permalink(get_option('page_for_posts')), 'slug' => 'blog'),
+            array('title' => 'Bài viết', 'url' => home_url('/tin-tuc/'), 'slug' => 'tin-tuc'),
             array('title' => 'Video', 'url' => home_url('/video'), 'slug' => 'video'),
             array('title' => 'Liên hệ', 'url' => home_url('/lien-he'), 'slug' => 'contact'),
         );

@@ -24,18 +24,18 @@ export default {
           900: '#0d47a1',
           950: '#0a2f70',
         },
-        secondary: {
-          50: '#FDF2F8',
-          100: '#FCE7F3',
-          200: '#FBCFE8',
-          300: '#F9A8D4',
-          400: '#F472B6',
-          500: '#EC4899',
-          600: '#DB2777',
-          700: '#BE185D',
-          800: '#9D174D',
-          900: '#831843',
-          950: '#500724',
+secondary: {
+          50: '#FFF7ED',
+          100: '#FFEDD5',
+          200: '#FED7AA',
+          300: '#FDBA74',
+          400: '#FB923C',
+          500: '#F97316',
+          600: '#EA580C',
+          700: '#C2410C',
+          800: '#9A3412',
+          900: '#7C2D12',
+          950: '#431407',
         },
         accent: {
           50: '#FFFBEB',
@@ -52,7 +52,7 @@ export default {
         },
         dark: {
           950: '#ffffff', // Trắng tinh
-          900: '#f8fafc', // Nền chính
+          900: '#f2f4f7', // Nền chính
           800: '#f1f5f9', // Nền card
           700: '#e2e8f0', // Viền
           600: '#cbd5e1', // Viền đậm
@@ -63,6 +63,9 @@ export default {
           100: '#1e293b', // Tiêu đề phụ
           50: '#0f172a',  // Tiêu đề chính
         },
+        red:{
+          10: '#df0506',
+        }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

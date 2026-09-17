@@ -1,62 +1,35 @@
 <template>
-  <a :href="post.link || '#'" 
-     class="group block bg-dark-800/50 rounded-2xl border border-dark-700 overflow-hidden hover:border-primary-500/30 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-    <!-- Image -->
-    <div class="relative aspect-[16/10] overflow-hidden bg-dark-800">
+  <div class="shadow-md bg-white rounded-xl px-4 sm:px-5 pt-5 pb-4">
+    <a class="rounded-md overflow-hidden block" :href="post.link || '#'">
       <img v-if="post.featuredImage"
-           :src="post.featuredImage"
-           :alt="post.title"
-           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-           loading="lazy">
-      <div v-else class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-500/10 to-secondary-500/10">
-        <svg class="w-12 h-12 text-dark-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           :alt="post.title" 
+           loading="lazy" 
+           decoding="async" 
+           class="rounded-md w-full h-[210px] object-cover hover:scale-105 transition-transform duration-500" 
+           :src="post.featuredImage" />
+      <div v-else class="rounded-md w-full h-[210px] flex items-center justify-center bg-gray-100">
+        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
         </svg>
       </div>
-
-      <!-- Category Badge -->
-      <div v-if="post.categories && post.categories.length" class="absolute top-3 left-3">
-        <span class="px-3 py-1 text-xs font-semibold text-primary-300 bg-dark-900/80 backdrop-blur-sm rounded-full border border-primary-500/20">
-          {{ post.categories[0].name }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div class="p-5">
-      <!-- Meta -->
-      <div class="flex items-center gap-3 mb-3">
-        <img v-if="post.author.avatar"
-             :src="post.author.avatar"
-             :alt="post.author.name"
-             class="w-6 h-6 rounded-full object-cover">
-        <div v-else class="w-6 h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
-          <span class="text-xs font-bold text-primary-400">{{ post.author.name?.charAt(0) }}</span>
-        </div>
-        <span class="text-xs text-dark-400">{{ post.author.name }}</span>
-        <span class="text-dark-600">•</span>
-        <time class="text-xs text-dark-400">{{ post.dateFormatted }}</time>
-      </div>
-
-      <!-- Title -->
-      <h3 class="text-base font-semibold text-dark-100 group-hover:text-primary-400 transition-colors line-clamp-2 mb-2 leading-snug">
-        {{ post.title }}
-      </h3>
-
-      <!-- Excerpt -->
-      <p class="text-sm text-dark-400 line-clamp-2 leading-relaxed">
-        {{ post.excerpt }}
-      </p>
-
-      <!-- Read More -->
-      <div class="mt-4 flex items-center gap-1.5 text-sm font-medium text-primary-400 group-hover:text-primary-300 transition-colors">
-        <span>Đọc thêm</span>
-        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+    </a>
+    <div class="mt-5">
+      <span class="flex items-center gap-3 mb-2.5">
+        <a class="text-sm text-gray-500 ease-out duration-200 hover:text-blue-500" :href="post.link || '#'">{{ post.dateFormatted }}</a>
+        <span class="block w-px h-4 bg-gray-300"></span>
+        <a class="text-sm text-gray-500 ease-out duration-200 hover:text-blue-500" :href="post.link || '#'">{{ post.author?.name || 'Admin' }}</a>
+      </span>
+      <h2 class="font-medium text-gray-900 text-lg sm:text-xl ease-out duration-200 mb-4 hover:text-blue-500 line-clamp-2">
+        <a :href="post.link || '#'">{{ post.title }}</a>
+      </h2>
+      <a class="text-sm font-medium text-gray-600 inline-flex items-center gap-2 py-2 ease-out duration-200 hover:text-blue-500" :href="post.link || '#'">
+        Đọc thêm
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M10.1023 4.10225C10.3219 3.88258 10.6781 3.88258 10.8977 4.10225L15.3977 8.60225C15.6174 8.82192 15.6174 9.17808 15.3977 9.39775L10.8977 13.8977C10.6781 14.1174 10.3219 14.1174 10.1023 13.8977C9.88258 13.6781 9.88258 13.3219 10.1023 13.1023L13.642 9.5625H3C2.68934 9.5625 2.4375 9.31066 2.4375 9C2.4375 8.68934 2.68934 8.4375 3 8.4375H13.642L10.1023 4.89775C9.88258 4.67808 9.88258 4.32192 10.1023 4.10225Z" fill=""></path>
         </svg>
-      </div>
+      </a>
     </div>
-  </a>
+  </div>
 </template>
 
 <script setup>

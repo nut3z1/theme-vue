@@ -60,7 +60,7 @@ import ProductCard from './ProductCard.vue';
 
 const wpData = window.wpVueTheme || {};
 const restUrl = wpData.restUrl || '/wp-json/';
-const shopUrl = (wpData.homeUrl || '/') + 'shop';
+const shopUrl = wpData.shopUrl || ((wpData.homeUrl || '/') + 'cua-hang');
 
 const products = ref([]);
 const loading = ref(true);

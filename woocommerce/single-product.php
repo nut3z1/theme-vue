@@ -16,9 +16,14 @@ get_header();
 
 // Get current product data for Vue
 global $product;
+
+if ( ! is_a( $product, 'WC_Product' ) ) {
+    $product = wc_get_product( get_the_ID() );
+}
+
 $product_data = array();
 
-if ($product) {
+if ( $product ) {
     $product_data = array(
         'id'               => $product->get_id(),
         'name'             => $product->get_name(),
