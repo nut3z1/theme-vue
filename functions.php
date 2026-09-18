@@ -14,6 +14,25 @@ define('VUECOMMERCE_VERSION', '1.0.0');
 define('VUECOMMERCE_DIR', get_template_directory());
 define('VUECOMMERCE_URI', get_template_directory_uri());
 
+// Fix XAMPP local SSL issue with WordPress API - Chỉ chạy trên Localhost
+if ( in_array( $_SERVER['HTTP_HOST'], array( 'localhost', '127.0.0.1' ) ) || strpos( $_SERVER['HTTP_HOST'], '.test' ) !== false || strpos( $_SERVER['HTTP_HOST'], '.local' ) !== false ) {
+    // Tắt SSL Verify cho mọi kết nối HTTP
+    add_filter('http_request_args', function($args) {
+        $args['sslverify'] = false;
+        return $args;
+    }, 10, 1);
+    add_filter('translations_api', '__return_true');
+    add_filter('https_local_ssl_verify', '__return_false');
+    
+    // Tắt tự động kiểm tra bản dịch
+    add_filter('auto_update_translation', '__return_false');
+    
+    // Tắt kiểm tra cập nhật core, theme, plugin
+    add_filter('pre_site_transient_update_core', '__return_null');
+    add_filter('pre_site_transient_update_plugins', '__return_null');
+    add_filter('pre_site_transient_update_themes', '__return_null');
+}
+
 /**
  * Theme Setup
  */
@@ -126,6 +145,8 @@ function vuecommerce_scripts() {
         'homeUrl'      => home_url('/'),
         'siteTitle'    => get_bloginfo('name'),
         'siteDesc'     => get_bloginfo('description'),
+        'siteLogo'     => has_custom_logo() ? wp_get_attachment_image_url(get_theme_mod('custom_logo'), 'full') : '',
+        'accountUrl'   => function_exists('wc_get_account_endpoint_url') ? wc_get_page_permalink('myaccount') : home_url('/my-account/'),
         'isHome'       => is_front_page(),
         'isShop'       => function_exists('is_shop') ? is_shop() : false,
         'isProduct'    => function_exists('is_product') ? is_product() : false,
@@ -140,9 +161,48 @@ function vuecommerce_scripts() {
         'checkoutUrl'  => function_exists('wc_get_checkout_url') ? wc_get_checkout_url() : '',
         'currency'     => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '₫',
         'primaryMenu'  => vuecommerce_get_menu_items('primary'),
+        'productCategories' => vuecommerce_get_product_categories(),
     ));
 }
 add_action('wp_enqueue_scripts', 'vuecommerce_scripts');
+
+/**
+ * Get WooCommerce product categories for Vue (server-side, no API call needed)
+ */
+function vuecommerce_get_product_categories() {
+    if (!function_exists('get_terms')) return array();
+
+    $excluded_slugs = array('uncategorized', 'chua-phan-loai');
+
+    $terms = get_terms(array(
+        'taxonomy'   => 'product_cat',
+        'orderby'    => 'count',
+        'order'      => 'DESC',
+        'hide_empty' => true,
+        'number'     => 20,
+    ));
+
+    if (is_wp_error($terms) || empty($terms)) return array();
+
+    $result = array();
+    foreach ($terms as $term) {
+        if (in_array($term->slug, $excluded_slugs)) continue;
+
+        $thumbnail_id = get_term_meta($term->term_id, 'thumbnail_id', true);
+        $image_url    = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium') : '';
+
+        $result[] = array(
+            'id'        => $term->term_id,
+            'name'      => $term->name,
+            'slug'      => $term->slug,
+            'count'     => $term->count,
+            'permalink' => get_term_link($term),
+            'image'     => $image_url,
+        );
+    }
+
+    return $result;
+}
 
 /**
  * Get menu items as array for Vue
@@ -156,7 +216,7 @@ function vuecommerce_get_menu_items($location) {
             array('title' => 'Sản phẩm', 'url' => function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/shop'), 'slug' => 'shop'),
             array('title' => 'Bài viết', 'url' => home_url('/tin-tuc/'), 'slug' => 'tin-tuc'),
             array('title' => 'Video', 'url' => home_url('/video'), 'slug' => 'video'),
-            array('title' => 'Liên hệ', 'url' => home_url('/lien-he'), 'slug' => 'contact'),
+            array('title' => 'Liên hệ', 'url' => home_url('/lien-he'), 'slug' => 'lien-he'),
         );
     }
 

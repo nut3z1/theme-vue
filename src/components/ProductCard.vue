@@ -100,7 +100,7 @@
     <div class="p-4">
       <!-- Name -->
       <h3
-        class="text-sm font-semibold text-dark-100 line-clamp-1 mb-2 leading-snug"
+        class="text-sm font-semibold text-dark-100 line-clamp-2 lg:line-clamp-1 mb-2 leading-snug"
       >
         {{ product.name }}
       </h3>

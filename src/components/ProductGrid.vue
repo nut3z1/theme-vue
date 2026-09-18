@@ -4,9 +4,8 @@
       <!-- Page Header -->
       <div class="mb-10">
         <h1 class="text-3xl sm:text-4xl font-display font-bold text-dark-50 mb-3">
-          Sản Phẩm
+          {{ pageTitle }}
         </h1>
-        <p class="text-dark-400">Khám phá bộ sưu tập sản phẩm đa dạng của chúng tôi</p>
       </div>
 
       <!-- Filters Bar -->
@@ -122,8 +121,16 @@ import AppPagination from './AppPagination.vue';
 
 const { products, loading, error, totalProducts, totalPages, currentPage, categories, hasProducts, fetchProducts, fetchCategories } = useProducts();
 
+// Đọc thông tin danh mục từ data attributes của mount point (taxonomy-product_cat.php)
+const mountEl = document.querySelector('#vue-product-grid');
+const initCategoryId  = mountEl?.dataset?.categoryId ? parseInt(mountEl.dataset.categoryId) : '';
+const initCategoryName = mountEl?.dataset?.categoryName || '';
+
+// Tiêu đề trang: hiển thị tên danh mục nếu đang ở trang danh mục
+const pageTitle = computed(() => initCategoryName ? initCategoryName : 'Sản Phẩm');
+
 const searchQuery = ref('');
-const selectedCategory = ref('');
+const selectedCategory = ref(initCategoryId); // Pre-select danh mục nếu có
 const sortBy = ref('date');
 let searchTimeout = null;
 
@@ -174,7 +181,8 @@ function resetFilters() {
 }
 
 onMounted(() => {
-  fetchProducts({ page: 1 });
+  // Nếu đang ở trang danh mục, lọc ngay theo danh mục đó
+  fetchProducts({ page: 1, category: initCategoryId || undefined });
   fetchCategories();
 });
 </script>

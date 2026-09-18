@@ -1,5 +1,7 @@
     <!-- Vue AppFooter mounts here -->
-    <div id="vue-footer"></div>
+    <?php if ( ! ( is_account_page() && ! is_user_logged_in() ) ) : ?>
+        <div id="vue-footer"></div>
+    <?php endif; ?>
 
 </div><!-- #vue-app -->
 

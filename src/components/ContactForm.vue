@@ -13,7 +13,7 @@
 
       <div class="grid lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
         <!-- Contact Info -->
-        <div class="lg:col-span-2 space-y-8">
+        <div class="lg:col-span-2 space-y-4">
           <!-- Info Cards -->
           <div v-for="info in contactInfo" :key="info.title"
                class="flex items-start gap-4 p-5 bg-dark-800/50 rounded-2xl border border-dark-700 hover:border-primary-500/20 transition-all group">
@@ -42,11 +42,11 @@
               </div>
               <div class="flex justify-between">
                 <span class="text-dark-400">Thứ 7</span>
-                <span class="text-dark-200">08:00 - 12:00</span>
+                <span class="text-dark-200">08:00 - 17:30</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-dark-400">Chủ nhật</span>
-                <span class="text-red-400">Nghỉ</span>
+                <span class="text-dark-200">08:00 - 17:30</span>
               </div>
             </div>
           </div>
@@ -100,7 +100,7 @@
                        id="contact-email"
                        type="email"
                        required
-                       placeholder="email@example.com"
+                       placeholder="email@gmail.com"
                        class="w-full px-4 py-3 bg-dark-900 border rounded-xl text-dark-100 placeholder-dark-500 focus:outline-none focus:ring-2 focus:ring-primary-500/30 transition-all text-sm"
                        :class="errors.email ? 'border-red-500' : 'border-dark-600 focus:border-primary-500'">
                 <p v-if="errors.email" class="mt-1 text-xs text-red-400">{{ errors.email }}</p>
@@ -199,19 +199,19 @@ const successMessage = ref('');
 const contactInfo = [
   {
     title: 'Địa chỉ',
-    value: '123 Đường ABC, Quận 1, TP.HCM',
+    value: '107 P. Trường Lâm, Kim Quan, Việt Hưng, Hà Nội',
     note: null,
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>',
   },
   {
     title: 'Điện thoại',
-    value: '0123 456 789',
-    note: 'Thứ 2 - Thứ 7, 8:00 - 17:30',
+    value: '0975 386 726',
+    note: 'Thứ 2 - Chủ nhật, 8:00 - 17:30',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>',
   },
   {
     title: 'Email',
-    value: 'info@vuecommerce.vn',
+    value: 'cuahanghoanglongamthanhso@gmail.com',
     note: 'Phản hồi trong 24h',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
   },

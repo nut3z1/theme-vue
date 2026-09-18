@@ -57,7 +57,7 @@
           <div class="mt-6 flex justify-center">
             <a
               :href="cat.url"
-              class="group inline-flex w-[250px] sm:w-[400px] items-center justify-center gap-2 px-12 py-2.5 rounded-lg bg-white border border-primary-500 text-sm font-medium text-primary-500 transition-all hover:bg-primary-500 hover:text-white"
+              class="group inline-flex w-[280px] sm:w-[400px] items-center justify-center gap-2 px-4 xl:px-12 py-2.5 rounded-lg bg-white border border-primary-500 text-sm font-medium text-primary-500 transition-all hover:bg-primary-500 hover:text-white"
             >
               Xem thêm {{ cat.name }}
 
@@ -172,7 +172,7 @@ onMounted(async () => {
           name: cat.name,
           slug: cat.slug,
           count: cat.count,
-          url: `${homeUrl}product-category/${cat.slug}/`,
+          url: `${homeUrl}danh-muc-san-pham/${cat.slug}/`,
           products: prodRes.data.map(formatProduct),
         };
       } catch (e) {

@@ -13,4 +13,6 @@
 
 <div id="vue-app" class="min-h-screen bg-dark-900 text-dark-50">
     <!-- Vue AppHeader mounts here -->
-    <div id="vue-header"></div>
+    <?php if ( ! ( is_account_page() && ! is_user_logged_in() ) ) : ?>
+        <div id="vue-header"></div>
+    <?php endif; ?>

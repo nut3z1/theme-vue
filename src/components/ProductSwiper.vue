@@ -280,7 +280,7 @@ onMounted(async () => {
   if (swiperContainer.value && products.value.length > 0) {
     new Swiper(swiperContainer.value, {
       modules: [Navigation, Autoplay],
-      slidesPerView: 2,
+      slidesPerView: 1,
       spaceBetween: 10,
       loop: products.value.length > 4,
       autoplay: {

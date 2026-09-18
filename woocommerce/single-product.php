@@ -53,7 +53,7 @@ if ( $product ) {
     if ($image_id) {
         $images[] = array(
             'id'        => $image_id,
-            'src'       => wp_get_attachment_image_url($image_id, 'product-large'),
+            'src'       => wp_get_attachment_image_url($image_id, 'full'),
             'thumbnail' => wp_get_attachment_image_url($image_id, 'product-thumb'),
             'alt'       => get_post_meta($image_id, '_wp_attachment_image_alt', true),
         );
@@ -62,7 +62,7 @@ if ( $product ) {
     foreach ($gallery_ids as $gid) {
         $images[] = array(
             'id'        => $gid,
-            'src'       => wp_get_attachment_image_url($gid, 'product-large'),
+            'src'       => wp_get_attachment_image_url($gid, 'full'),
             'thumbnail' => wp_get_attachment_image_url($gid, 'product-thumb'),
             'alt'       => get_post_meta($gid, '_wp_attachment_image_alt', true),
         );

@@ -6,7 +6,7 @@
       <div class="flex items-center justify-between mb-8">
         <div>
           <h2 class="text-2xl sm:text-3xl font-display font-bold text-dark-50">
-            Tin Tức <span class="bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">Mới Nhất</span>
+            Tin Tức <span class="bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">Mới Nhất</span>
           </h2>
           <p class="text-dark-400 mt-1 text-sm">Cập nhật tin tức, xu hướng và kiến thức hữu ích</p>
         </div>

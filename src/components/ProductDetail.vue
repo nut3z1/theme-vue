@@ -448,7 +448,7 @@
             <div class="flex flex-col gap-2.5">
               <!-- Gọi ngay - full width đỏ -->
               <a
-                href="tel:0963889192"
+                href="tel:0975 386 726"
                 class="flex flex-col items-center justify-center w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors duration-200 cursor-pointer"
               >
                 <span class="font-bold text-base leading-tight flex items-center gap-2">
@@ -464,7 +464,7 @@
               <div class="grid grid-cols-2 gap-2.5">
                 <!-- Chat Zalo -->
                 <a
-                  href="https://zalo.me/0963889192"
+                  href="https://zalo.me/0975386726"
                   target="_blank"
                   class="flex flex-col items-center justify-center py-3 rounded-xl bg-[#3bb1e1] hover:bg-[#0057d9] text-white transition-colors duration-200 cursor-pointer"
                 >
@@ -479,7 +479,7 @@
 
                 <!-- Review sản phẩm -->
                 <a
-                  href="#review"
+                  href="https://www.youtube.com/@HoangLongAmThanhSo"
                   @click="activeTab = 'review'"
                   class="flex flex-col items-center justify-center py-3 rounded-xl bg-green-500 hover:bg-green-600 text-white transition-colors duration-200 cursor-pointer"
                 >
@@ -498,68 +498,37 @@
       </div>
 
       <div class="mt-11">
-        <div class="flex border-b border-gray-200">
+        <div class="flex flex-wrap items-center bg-white rounded-[10px] shadow-sm gap-2 sm:gap-5 xl:gap-10 py-4 px-4 sm:px-6 border border-gray-100">
           <button
             @click="activeTab = 'information'"
-            class="px-6 py-3 text-base font-medium cursor-pointer transition-colors relative"
-            :class="
-              activeTab === 'information'
-                ? 'text-primary-500'
-                : 'text-gray-500 hover:text-gray-800'
-            "
+            class="font-medium text-base ease-out duration-200 hover:text-primary-600 relative before:h-0.5 before:bg-primary-600 before:absolute before:left-0 before:-bottom-1 before:ease-out before:duration-200"
+            :class="activeTab === 'information' ? 'text-primary-600 before:w-full' : 'text-gray-800 before:w-0'"
           >
             Mô tả
-            <span
-              v-if="activeTab === 'information'"
-              class="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 rounded-t"
-            ></span>
           </button>
           <button
             @click="activeTab = 'specification'"
-            class="px-6 py-3 text-base font-medium cursor-pointer transition-colors relative"
-            :class="
-              activeTab === 'specification'
-                ? 'text-primary-500'
-                : 'text-gray-500 hover:text-gray-800'
-            "
+            class="font-medium text-base ease-out duration-200 hover:text-primary-600 relative before:h-0.5 before:bg-primary-600 before:absolute before:left-0 before:-bottom-1 before:ease-out before:duration-200"
+            :class="activeTab === 'specification' ? 'text-primary-600 before:w-full' : 'text-gray-800 before:w-0'"
           >
             Thông số kỹ thuật
-            <span
-              v-if="activeTab === 'specification'"
-              class="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 rounded-t"
-            ></span>
           </button>
           <button
             @click="activeTab = 'review'"
-            class="px-6 py-3 text-base font-medium cursor-pointer transition-colors relative"
-            :class="
-              activeTab === 'review'
-                ? 'text-primary-500'
-                : 'text-gray-500 hover:text-gray-800'
-            "
+            class="font-medium text-base ease-out duration-200 hover:text-primary-600 relative before:h-0.5 before:bg-primary-600 before:absolute before:left-0 before:-bottom-1 before:ease-out before:duration-200"
+            :class="activeTab === 'review' ? 'text-primary-600 before:w-full' : 'text-gray-800 before:w-0'"
           >
             Đánh giá
-            <span
-              v-if="activeTab === 'review'"
-              class="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 rounded-t"
-            ></span>
           </button>
           <button
             @click="activeTab = 'delivery'"
-            class="px-6 py-3 text-base font-medium cursor-pointer transition-colors relative"
-            :class="
-              activeTab === 'delivery'
-                ? 'text-primary-500'
-                : 'text-gray-500 hover:text-gray-800'
-            "
+            class="font-medium text-base ease-out duration-200 hover:text-primary-600 relative before:h-0.5 before:bg-primary-600 before:absolute before:left-0 before:-bottom-1 before:ease-out before:duration-200"
+            :class="activeTab === 'delivery' ? 'text-primary-600 before:w-full' : 'text-gray-800 before:w-0'"
           >
             Vận chuyển
-            <span
-              v-if="activeTab === 'delivery'"
-              class="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 rounded-t"
-            ></span>
           </button>
         </div>
+
 
         <div class="py-8">
           <div v-show="activeTab === 'specification'" class="overflow-x-auto">
@@ -592,8 +561,8 @@
           <div v-show="activeTab === 'information'">
             <div
               v-if="productData.description"
-              class="prose max-w-none text-gray-600"
-              v-html="productData.description"
+              class="prose max-w-none text-gray-600 product-description-formatted"
+              v-html="cleanDescription"
             ></div>
             <div v-else class="text-gray-500 italic">
               Chưa có mô tả chi tiết.
@@ -601,8 +570,174 @@
           </div>
 
           <div v-show="activeTab === 'review'">
-            <div class="text-gray-500">Reviews feature coming soon.</div>
+            <div class="flex flex-col sm:flex-row gap-8 xl:gap-12">
+              <!-- Danh sách đánh giá -->
+              <div class="w-full sm:max-w-[570px]">
+                <h2 class="font-medium text-2xl text-gray-800 mb-7">
+                  {{ reviews.length }} Đánh giá cho sản phẩm này
+                </h2>
+
+                <div v-if="reviews.length > 0" class="flex flex-col gap-5">
+                  <div
+                    v-for="review in displayedReviews"
+                    :key="review.id"
+                    class="rounded-xl bg-white shadow-sm border border-gray-100 p-4 sm:p-5"
+                  >
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center shrink-0">
+                          <img
+                            v-if="review.reviewer_avatar_urls && review.reviewer_avatar_urls['48']"
+                            :src="review.reviewer_avatar_urls['48']"
+                            :alt="review.reviewer"
+                            class="w-full h-full object-cover"
+                          />
+                          <span v-else class="text-gray-500 font-medium text-sm">
+                            {{ review.reviewer ? review.reviewer[0].toUpperCase() : 'U' }}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 class="font-medium text-gray-800 text-sm">{{ review.reviewer }}</h3>
+                          <p class="text-xs text-gray-400">{{ formatReviewDate(review.date_created) }}</p>
+                        </div>
+                      </div>
+                      <!-- Stars -->
+                      <div class="flex items-center gap-0.5">
+                        <span
+                          v-for="i in 5"
+                          :key="i"
+                          :class="i <= review.rating ? 'text-[#FBB040]' : 'text-gray-300'"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"/>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                    <p class="text-gray-600 mt-4 text-sm leading-relaxed" v-html="review.review"></p>
+                  </div>
+
+                  <!-- Show More -->
+                  <div v-if="reviews.length > displayedReviews.length" class="flex justify-center sm:justify-start mt-2">
+                    <button
+                      @click="reviewLimit += 5"
+                      class="font-medium text-white bg-violet-500 hover:bg-violet-600 transition py-2.5 px-7 rounded-lg"
+                    >
+                      Xem thêm
+                    </button>
+                  </div>
+                </div>
+
+                <div v-else-if="reviewsLoading" class="flex items-center gap-2 text-gray-400">
+                  <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                  </svg>
+                  Đang tải đánh giá...
+                </div>
+
+                <div v-else class="text-gray-400 italic text-sm">
+                  Chưa có đánh giá nào. Hãy là người đầu tiên!
+                </div>
+              </div>
+
+              <!-- Form gửi đánh giá -->
+              <div class="w-full sm:max-w-[550px]">
+                <form @submit.prevent="submitReview">
+                  <h2 class="font-medium text-2xl text-gray-800 mb-2">Viết đánh giá</h2>
+                  <p class="mb-5 text-sm text-gray-500">Email của bạn sẽ không được hiển thị công khai. Các trường bắt buộc được đánh dấu *</p>
+
+                  <!-- Chọn sao -->
+                  <div class="mb-5">
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm text-gray-600">Đánh giá của bạn *</span>
+                      <div class="flex items-center gap-1">
+                        <button
+                          v-for="i in 5"
+                          :key="i"
+                          type="button"
+                          @click="reviewForm.rating = i"
+                          @mouseover="reviewHover = i"
+                          @mouseleave="reviewHover = 0"
+                        >
+                          <span :class="(reviewHover || reviewForm.rating) >= i ? 'text-[#FBB040]' : 'text-gray-300'" class="cursor-pointer transition-colors">
+                            <svg width="20" height="20" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M16.7906 6.72187L11.7 5.93438L9.39377 1.09688C9.22502 0.759375 8.77502 0.759375 8.60627 1.09688L6.30002 5.9625L1.23752 6.72187C0.871891 6.77812 0.731266 7.25625 1.01252 7.50938L4.69689 11.3063L3.82502 16.6219C3.76877 16.9875 4.13439 17.2969 4.47189 17.0719L9.05627 14.5687L13.6125 17.0719C13.9219 17.2406 14.3156 16.9594 14.2313 16.6219L13.3594 11.3063L17.0438 7.50938C17.2688 7.25625 17.1563 6.77812 16.7906 6.72187Z"/>
+                            </svg>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl bg-white shadow-sm border border-gray-100 p-4 sm:p-5">
+                    <!-- Comment -->
+                    <div class="mb-5">
+                      <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-2">Nhận xét</label>
+                      <textarea
+                        id="review-comment"
+                        v-model="reviewForm.comment"
+                        placeholder="Nhận xét của bạn về sản phẩm..."
+                        rows="5"
+                        maxlength="250"
+                        class="rounded-lg border border-gray-200 bg-gray-50 placeholder:text-gray-400 w-full p-4 text-sm outline-none duration-200 focus:border-violet-400 focus:ring-2 focus:ring-violet-400/20 resize-none"
+                        required
+                      ></textarea>
+                      <div class="flex items-center justify-between mt-1.5 text-xs text-gray-400">
+                        <span>Tối đa 250 ký tự</span>
+                        <span>{{ reviewForm.comment.length }}/250</span>
+                      </div>
+                    </div>
+
+                    <!-- Name & Email -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-5">
+                      <div class="flex-1">
+                        <label for="review-name" class="block text-sm font-medium text-gray-700 mb-2">Họ tên <span class="text-red-500">*</span></label>
+                        <input
+                          id="review-name"
+                          v-model="reviewForm.name"
+                          type="text"
+                          placeholder="Tên của bạn"
+                          required
+                          class="rounded-full border border-gray-200 h-11 bg-gray-50 placeholder:text-gray-400 w-full py-2.5 px-4 text-sm outline-none duration-200 focus:border-violet-400 focus:ring-2 focus:ring-violet-400/20"
+                        />
+                      </div>
+                      <div class="flex-1">
+                        <label for="review-email" class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-red-500">*</span></label>
+                        <input
+                          id="review-email"
+                          v-model="reviewForm.email"
+                          type="email"
+                          placeholder="Email của bạn"
+                          required
+                          class="rounded-full border border-gray-200 h-11 bg-gray-50 placeholder:text-gray-400 w-full py-2.5 px-4 text-sm outline-none duration-200 focus:border-violet-400 focus:ring-2 focus:ring-violet-400/20"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div>
+                      <p v-if="reviewSubmitMsg" class="mb-3 text-sm" :class="reviewSubmitSuccess ? 'text-green-600' : 'text-red-500'">
+                        {{ reviewSubmitMsg }}
+                      </p>
+                      <button
+                        type="submit"
+                        :disabled="reviewSubmitting"
+                        class="font-medium text-white bg-primary-500 hover:bg-primary-600 transition py-2.5 px-7 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      >
+                        <svg v-if="reviewSubmitting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        {{ reviewSubmitting ? 'Đang gửi...' : 'Gửi đánh giá' }}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
+
 
           <div
             v-show="activeTab === 'delivery'"
@@ -705,7 +840,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useCart } from "../composables/useCart.js";
 import ProductCard from "./ProductCard.vue";
 
@@ -717,6 +852,12 @@ const wpData = window.wpVueTheme || {};
 const homeUrl = wpData.homeUrl || "/";
 const shopUrl = homeUrl + "shop";
 const currency = wpData.currency || "₫";
+
+const cleanDescription = computed(() => {
+  if (!productData.description) return '';
+  let desc = productData.description.replace(/ style=(['"])[^\1]*?\1/gi, '');
+  return desc.replace(/\n/g, '<br/>');
+});
 
 // Images
 const images = computed(() => productData.images || []);
@@ -756,6 +897,90 @@ const discountPercent = computed(() => {
 // Related Products
 const relatedProducts = computed(() => productData.related_products || []);
 
+// ── Reviews ──────────────────────────────────────────────
+const reviews = ref([]);
+const reviewsLoading = ref(false);
+const reviewLimit = ref(5);
+const displayedReviews = computed(() => reviews.value.slice(0, reviewLimit.value));
+
+// Review form state
+const reviewHover = ref(0);
+const reviewForm = ref({ rating: 0, comment: '', name: '', email: '' });
+const reviewSubmitting = ref(false);
+const reviewSubmitMsg = ref('');
+const reviewSubmitSuccess = ref(false);
+
+async function fetchReviews() {
+  if (!productData.id) return;
+  reviewsLoading.value = true;
+  try {
+    const res = await fetch(
+      `${wpData.restUrl}wc/v3/products/reviews?product=${productData.id}&per_page=50`,
+      { headers: { 'X-WP-Nonce': wpData.nonce } }
+    );
+    if (res.ok) {
+      reviews.value = await res.json();
+    }
+  } catch (e) {
+    console.error('Failed to fetch reviews', e);
+  } finally {
+    reviewsLoading.value = false;
+  }
+}
+
+async function submitReview() {
+  if (!reviewForm.value.rating) {
+    reviewSubmitMsg.value = 'Vui lòng chọn số sao đánh giá.';
+    reviewSubmitSuccess.value = false;
+    return;
+  }
+  reviewSubmitting.value = true;
+  reviewSubmitMsg.value = '';
+  try {
+    const res = await fetch(`${wpData.restUrl}wc/v3/products/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WP-Nonce': wpData.nonce,
+      },
+      body: JSON.stringify({
+        product_id: productData.id,
+        review: reviewForm.value.comment,
+        reviewer: reviewForm.value.name,
+        reviewer_email: reviewForm.value.email,
+        rating: reviewForm.value.rating,
+      }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      reviewSubmitSuccess.value = true;
+      reviewSubmitMsg.value = 'Cảm ơn! Đánh giá của bạn đang chờ duyệt.';
+      reviewForm.value = { rating: 0, comment: '', name: '', email: '' };
+      reviewHover.value = 0;
+      await fetchReviews();
+    } else {
+      reviewSubmitSuccess.value = false;
+      reviewSubmitMsg.value = data.message || 'Gửi đánh giá thất bại. Vui lòng thử lại.';
+    }
+  } catch (e) {
+    reviewSubmitSuccess.value = false;
+    reviewSubmitMsg.value = 'Có lỗi xảy ra. Vui lòng thử lại.';
+  } finally {
+    reviewSubmitting.value = false;
+  }
+}
+
+function formatReviewDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+onMounted(() => {
+  fetchReviews();
+});
+// ─────────────────────────────────────────────────────────
+
 function formatDisplayPrice(price) {
   if (!price && price !== 0) return "";
   return new Intl.NumberFormat("vi-VN").format(parseFloat(price)) + currency;
@@ -782,3 +1007,43 @@ async function handleAddToCart() {
   }
 }
 </script>
+
+<style scoped>
+.product-description-formatted :deep(h1),
+.product-description-formatted :deep(h2),
+.product-description-formatted :deep(h3),
+.product-description-formatted :deep(h4),
+.product-description-formatted :deep(h5),
+.product-description-formatted :deep(h6) {
+  font-weight: 700;
+  color: #1f2937;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+.product-description-formatted :deep(h1) { font-size: 1.875rem; }
+.product-description-formatted :deep(h2) { font-size: 1.5rem; }
+.product-description-formatted :deep(h3) { font-size: 1.25rem; }
+.product-description-formatted :deep(h4) { font-size: 1.125rem; }
+
+.product-description-formatted :deep(strong),
+.product-description-formatted :deep(b) {
+  font-weight: 700;
+  color: #111827;
+}
+
+.product-description-formatted :deep(p) {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.product-description-formatted :deep(img) {
+  max-width: 900px !important;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 2rem auto;
+  border-radius: 0.5rem;
+}
+</style>
+

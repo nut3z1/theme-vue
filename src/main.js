@@ -21,9 +21,11 @@ import NewsletterSignup from './components/NewsletterSignup.vue';
 import NewProducts from './components/NewProducts.vue';
 import CategoryProducts from './components/CategoryProducts.vue';
 import ProductSwiper from './components/ProductSwiper.vue';
+import CategoryCarousel from './components/CategoryCarousel.vue';
 import LatestPosts from './components/LatestPosts.vue';
 import VideoContent from './components/VideoContent.vue';
 import InstantSearch from './components/InstantSearch.vue';
+import CustomerGallery from './components/CustomerGallery.vue';
 
 /**
  * Mount a Vue component to a DOM element if it exists
@@ -63,9 +65,11 @@ function init() {
   if (wpData.isHome || document.querySelector('#vue-hero')) {
     mountComponent('#vue-hero', HeroSection);
     mountComponent('#vue-product-swiper', ProductSwiper);
+    mountComponent('#vue-category-carousel', CategoryCarousel);
     mountComponent('#vue-new-products', NewProducts);
     mountComponent('#vue-category-products', CategoryProducts);
     mountComponent('#vue-latest-posts', LatestPosts);
+    mountComponent('#vue-customer-gallery', CustomerGallery);
     mountComponent('#vue-newsletter', NewsletterSignup);
   }
 
