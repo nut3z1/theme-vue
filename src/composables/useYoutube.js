@@ -9,6 +9,7 @@ import axios from 'axios';
 export function useYoutube() {
   const videos = ref([]);
   const loading = ref(false);
+  const loadingMore = ref(false);
   const error = ref(null);
   const nextPageToken = ref(null);
   const prevPageToken = ref(null);
@@ -23,6 +24,10 @@ export function useYoutube() {
   async function fetchVideos(pageToken = '', maxResults = 10) {
     loading.value = true;
     error.value = null;
+
+    if (!pageToken) {
+      videos.value = [];
+    }
 
     try {
       const params = { maxResults };
@@ -49,8 +54,8 @@ export function useYoutube() {
    * Fetch videos from the proxy endpoint and append them (for Load More)
    */
   async function loadMoreVideos(maxResults = 10) {
-    if (!nextPageToken.value || loading.value) return;
-    loading.value = true;
+    if (!nextPageToken.value || loadingMore.value || loading.value) return;
+    loadingMore.value = true;
     error.value = null;
 
     try {
@@ -67,7 +72,7 @@ export function useYoutube() {
       error.value = msg;
       console.error('[useYoutube] loadMoreVideos failed:', err);
     } finally {
-      loading.value = false;
+      loadingMore.value = false;
     }
   }
 
@@ -129,6 +134,7 @@ export function useYoutube() {
   return {
     videos,
     loading,
+    loadingMore,
     error,
     nextPageToken,
     prevPageToken,
