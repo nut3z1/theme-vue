@@ -215,28 +215,6 @@
               ></div>
             </div>
 
-            <div
-              class="space-y-6"
-              v-if="productData.attributes && productData.attributes.length"
-            >
-              <div v-for="attr in productData.attributes" :key="attr.name">
-                <h4 class="font-medium text-gray-800 text-base mb-4">
-                  {{ attr.name }}:
-                </h4>
-                <div class="flex gap-2 flex-wrap">
-                  <button
-                    v-for="opt in Array.isArray(attr.options)
-                      ? attr.options
-                      : [attr.options]"
-                    :key="opt"
-                    class="px-3.5 py-2 h-9 text-sm leading-5 inline-flex items-center justify-center font-medium border rounded-lg cursor-pointer transition bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
-                  >
-                    {{ opt }}
-                  </button>
-                </div>
-              </div>
-            </div>
-
             <div>
               <div
                 class="flex gap-4"
@@ -385,7 +363,7 @@
                 <ul class="text-sm text-[#696767] space-y-3">
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2026/09/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -394,7 +372,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2026/09/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -406,7 +384,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2026/09/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -418,7 +396,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2026/09/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />
@@ -429,7 +407,7 @@
 
                   <li class="flex items-start gap-2">
                     <img
-                      src="https://hoanglongamthanhso.com/wp-content/uploads/2021/06/clipart11037.png"
+                      src="https://hoanglongamthanhso.com/wp-content/uploads/2026/09/clipart11037.png"
                       alt="icon-thong-tin"
                       class="w-4 h-4 shrink-0 mt-0.5"
                     />

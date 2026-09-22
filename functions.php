@@ -13,20 +13,29 @@ if (!defined('ABSPATH')) {
 define('VUECOMMERCE_VERSION', '1.0.0');
 define('VUECOMMERCE_DIR', get_template_directory());
 define('VUECOMMERCE_URI', get_template_directory_uri());
+define('VUECOMMERCE_DEV', true);
 
-// Fix XAMPP local SSL issue with WordPress API - Chỉ chạy trên Localhost
-if ( in_array( $_SERVER['HTTP_HOST'], array( 'localhost', '127.0.0.1' ) ) || strpos( $_SERVER['HTTP_HOST'], '.test' ) !== false || strpos( $_SERVER['HTTP_HOST'], '.local' ) !== false ) {
+/**
+ * Fix SSL local (XAMPP/Laragon) - chỉ chạy trên Localhost
+ */
+$vuecommerce_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+
+if (
+    in_array($vuecommerce_host, array('localhost', '127.0.0.1'), true) ||
+    strpos($vuecommerce_host, '.test') !== false ||
+    strpos($vuecommerce_host, '.local') !== false
+) {
     // Tắt SSL Verify cho mọi kết nối HTTP
-    add_filter('http_request_args', function($args) {
+    add_filter('http_request_args', function ($args) {
         $args['sslverify'] = false;
         return $args;
     }, 10, 1);
     add_filter('translations_api', '__return_true');
     add_filter('https_local_ssl_verify', '__return_false');
-    
+
     // Tắt tự động kiểm tra bản dịch
     add_filter('auto_update_translation', '__return_false');
-    
+
     // Tắt kiểm tra cập nhật core, theme, plugin
     add_filter('pre_site_transient_update_core', '__return_null');
     add_filter('pre_site_transient_update_plugins', '__return_null');
@@ -37,26 +46,20 @@ if ( in_array( $_SERVER['HTTP_HOST'], array( 'localhost', '127.0.0.1' ) ) || str
  * Theme Setup
  */
 function vuecommerce_setup() {
-    // Add default posts and comments RSS feed links to head
     add_theme_support('automatic-feed-links');
-
-    // Let WordPress manage the document title
     add_theme_support('title-tag');
 
-    // Enable support for Post Thumbnails
     add_theme_support('post-thumbnails');
     add_image_size('product-thumb', 400, 400, true);
     add_image_size('product-large', 800, 800, true);
     add_image_size('post-thumb', 600, 400, true);
     add_image_size('hero-banner', 1920, 800, true);
 
-    // Register navigation menus
     register_nav_menus(array(
-        'primary'   => __('Menu Chính', 'vuecommerce'),
-        'footer'    => __('Menu Footer', 'vuecommerce'),
+        'primary' => __('Menu Chính', 'vuecommerce'),
+        'footer'  => __('Menu Footer', 'vuecommerce'),
     ));
 
-    // Switch default core markup to output valid HTML5
     add_theme_support('html5', array(
         'search-form',
         'comment-form',
@@ -67,7 +70,6 @@ function vuecommerce_setup() {
         'script',
     ));
 
-    // Add support for custom logo
     add_theme_support('custom-logo', array(
         'height'      => 80,
         'width'       => 250,
@@ -81,10 +83,7 @@ function vuecommerce_setup() {
     add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('wc-product-gallery-slider');
 
-    // Responsive embeds
     add_theme_support('responsive-embeds');
-
-    // Wide alignment
     add_theme_support('align-wide');
 }
 add_action('after_setup_theme', 'vuecommerce_setup');
@@ -104,14 +103,12 @@ function vuecommerce_scripts() {
     // Main theme stylesheet (WordPress metadata only)
     wp_enqueue_style('vuecommerce-style', get_stylesheet_uri(), array(), VUECOMMERCE_VERSION);
 
-    // Define VUECOMMERCE_DEV in wp-config.php to enable Vite Dev Server HMR directly in WordPress
-    $is_dev = defined('VUECOMMERCE_DEV') && VUECOMMERCE_DEV;
-
-    if ($is_dev) {
-        // Load Vite Dev Server Client
-        wp_enqueue_script('vite-client', 'http://localhost:3000/@vite/client', array(), null, false);
-        // Load Vue Entry from Vite Dev Server
-        wp_enqueue_script('vuecommerce-app', 'http://localhost:3000/src/main.js', array(), null, true);
+    // Chỉ bật khi define('VUECOMMERCE_DEV', true) trong wp-config.php hoặc functions.php (máy local).
+    // Trên môi trường thật KHÔNG define => sẽ tải file build.
+    if (defined('VUECOMMERCE_DEV') && VUECOMMERCE_DEV) {
+        // Vite HMR cho development
+        wp_enqueue_script('vite-client', 'http://localhost:3000/@vite/client', array(), null, true);
+        wp_enqueue_script('vuecommerce-app', 'http://localhost:3000/src/main.js', array('vite-client'), null, true);
     } else {
         // Vite compiled CSS
         $css_file = VUECOMMERCE_DIR . '/assets/css/main.css';
@@ -120,7 +117,7 @@ function vuecommerce_scripts() {
                 'vuecommerce-app',
                 VUECOMMERCE_URI . '/assets/css/main.css',
                 array('vuecommerce-google-fonts'),
-                VUECOMMERCE_VERSION
+                filemtime($css_file)
             );
         }
 
@@ -131,36 +128,44 @@ function vuecommerce_scripts() {
                 'vuecommerce-app',
                 VUECOMMERCE_URI . '/assets/js/main.js',
                 array(),
-                VUECOMMERCE_VERSION,
+                filemtime($js_file),
                 true
             );
         }
     }
 
-    // Pass WordPress data to Vue (runs for both Dev and Prod)
+    // Sharer.js for social sharing
+    wp_enqueue_script('sharer-js', 'https://cdn.jsdelivr.net/npm/sharer.js@latest/sharer.min.js', array(), null, true);
+
+    // Lấy ID của danh mục "chinh-sach" để loại trừ
+    $chinh_sach_cat = get_category_by_slug('chinh-sach');
+    $exclude_cat_id = $chinh_sach_cat ? $chinh_sach_cat->term_id : 0;
+
+    // Truyền dữ liệu WordPress sang Vue
     wp_localize_script('vuecommerce-app', 'wpVueTheme', array(
-        'restUrl'      => esc_url_raw(rest_url()),
-        'nonce'        => wp_create_nonce('wp_rest'),
-        'themeUrl'     => VUECOMMERCE_URI,
-        'homeUrl'      => home_url('/'),
-        'siteTitle'    => get_bloginfo('name'),
-        'siteDesc'     => get_bloginfo('description'),
-        'siteLogo'     => has_custom_logo() ? wp_get_attachment_image_url(get_theme_mod('custom_logo'), 'full') : '',
-        'accountUrl'   => function_exists('wc_get_account_endpoint_url') ? wc_get_page_permalink('myaccount') : home_url('/my-account/'),
-        'isHome'       => is_front_page(),
-        'isShop'       => function_exists('is_shop') ? is_shop() : false,
-        'isProduct'    => function_exists('is_product') ? is_product() : false,
-        'isBlog'       => is_home() || is_archive(),
-        'isContact'    => is_page('contact') || is_page('lien-he'),
-        'isSingle'     => is_singular('post'),
-        'currentPage'  => get_query_var('paged') ? get_query_var('paged') : 1,
-        'postId'       => get_the_ID(),
-        'wcActive'     => class_exists('WooCommerce'),
-        'shopUrl'      => function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '',
-        'cartUrl'      => function_exists('wc_get_cart_url') ? wc_get_cart_url() : '',
-        'checkoutUrl'  => function_exists('wc_get_checkout_url') ? wc_get_checkout_url() : '',
-        'currency'     => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '₫',
-        'primaryMenu'  => vuecommerce_get_menu_items('primary'),
+        'excludeCatId'      => $exclude_cat_id,
+        'restUrl'           => esc_url_raw(rest_url()),
+        'nonce'             => wp_create_nonce('wp_rest'),
+        'themeUrl'          => VUECOMMERCE_URI,
+        'homeUrl'           => home_url('/'),
+        'siteTitle'         => get_bloginfo('name'),
+        'siteDesc'          => get_bloginfo('description'),
+        'siteLogo'          => has_custom_logo() ? wp_get_attachment_image_url(get_theme_mod('custom_logo'), 'full') : '',
+        'accountUrl'        => function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : home_url('/my-account/'),
+        'isHome'            => is_front_page(),
+        'isShop'            => function_exists('is_shop') ? is_shop() : false,
+        'isProduct'         => function_exists('is_product') ? is_product() : false,
+        'isBlog'            => is_home() || is_archive(),
+        'isContact'         => is_page('contact') || is_page('lien-he'),
+        'isSingle'          => is_singular('post'),
+        'currentPage'       => get_query_var('paged') ? get_query_var('paged') : 1,
+        'postId'            => get_the_ID(),
+        'wcActive'          => class_exists('WooCommerce'),
+        'shopUrl'           => function_exists('wc_get_page_id') ? get_permalink(wc_get_page_id('shop')) : '',
+        'cartUrl'           => function_exists('wc_get_cart_url') ? wc_get_cart_url() : '',
+        'checkoutUrl'       => function_exists('wc_get_checkout_url') ? wc_get_checkout_url() : '',
+        'currency'          => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : '₫',
+        'primaryMenu'       => vuecommerce_get_menu_items('primary'),
         'productCategories' => vuecommerce_get_product_categories(),
     ));
 }
@@ -170,7 +175,9 @@ add_action('wp_enqueue_scripts', 'vuecommerce_scripts');
  * Get WooCommerce product categories for Vue (server-side, no API call needed)
  */
 function vuecommerce_get_product_categories() {
-    if (!function_exists('get_terms')) return array();
+    if (!function_exists('get_terms') || !taxonomy_exists('product_cat')) {
+        return array();
+    }
 
     $excluded_slugs = array('uncategorized', 'chua-phan-loai');
 
@@ -182,11 +189,15 @@ function vuecommerce_get_product_categories() {
         'number'     => 20,
     ));
 
-    if (is_wp_error($terms) || empty($terms)) return array();
+    if (is_wp_error($terms) || empty($terms)) {
+        return array();
+    }
 
     $result = array();
     foreach ($terms as $term) {
-        if (in_array($term->slug, $excluded_slugs)) continue;
+        if (in_array($term->slug, $excluded_slugs, true)) {
+            continue;
+        }
 
         $thumbnail_id = get_term_meta($term->term_id, 'thumbnail_id', true);
         $image_url    = $thumbnail_id ? wp_get_attachment_image_url($thumbnail_id, 'medium') : '';
@@ -208,30 +219,35 @@ function vuecommerce_get_product_categories() {
  * Get menu items as array for Vue
  */
 function vuecommerce_get_menu_items($location) {
+    $default_menu = array(
+        array('title' => 'Trang chủ', 'url' => home_url('/'), 'slug' => 'home'),
+        array('title' => 'Sản phẩm', 'url' => function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/shop'), 'slug' => 'shop'),
+        array('title' => 'Bài viết', 'url' => home_url('/tin-tuc/'), 'slug' => 'tin-tuc'),
+        array('title' => 'Video', 'url' => home_url('/video'), 'slug' => 'video'),
+        array('title' => 'Liên hệ', 'url' => home_url('/lien-he'), 'slug' => 'lien-he'),
+    );
+
     $locations = get_nav_menu_locations();
     if (!isset($locations[$location])) {
-        // Default menu items if no menu is set
-        return array(
-            array('title' => 'Trang chủ', 'url' => home_url('/'), 'slug' => 'home'),
-            array('title' => 'Sản phẩm', 'url' => function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/shop'), 'slug' => 'shop'),
-            array('title' => 'Bài viết', 'url' => home_url('/tin-tuc/'), 'slug' => 'tin-tuc'),
-            array('title' => 'Video', 'url' => home_url('/video'), 'slug' => 'video'),
-            array('title' => 'Liên hệ', 'url' => home_url('/lien-he'), 'slug' => 'lien-he'),
-        );
+        return $default_menu;
     }
 
     $menu = wp_get_nav_menu_object($locations[$location]);
-    $items = wp_get_nav_menu_items($menu->term_id);
+    if (!$menu) {
+        return $default_menu;
+    }
+
+    $items      = wp_get_nav_menu_items($menu->term_id);
     $menu_array = array();
 
     if ($items) {
         foreach ($items as $item) {
             $menu_array[] = array(
-                'title'  => $item->title,
-                'url'    => $item->url,
-                'slug'   => sanitize_title($item->title),
-                'target' => $item->target,
-                'classes' => implode(' ', $item->classes),
+                'title'   => $item->title,
+                'url'     => $item->url,
+                'slug'    => sanitize_title($item->title),
+                'target'  => $item->target,
+                'classes' => implode(' ', array_filter($item->classes)),
             );
         }
     }
@@ -273,12 +289,18 @@ function vuecommerce_handle_contact($request) {
         return new WP_Error('invalid_email', 'Email không hợp lệ', array('status' => 400));
     }
 
+    // Chống header injection (xuống dòng trong tên)
+    $name = str_replace(array("\r", "\n"), ' ', $name);
+
     // Send email to admin
-    $to = get_option('admin_email');
+    $to            = get_option('admin_email');
     $email_subject = '[VueCommerce] ' . $subject;
-    $email_body = sprintf(
+    $email_body    = sprintf(
         "Tên: %s\nEmail: %s\nSố điện thoại: %s\n\nNội dung:\n%s",
-        $name, $email, $phone ?: 'Không có', $message
+        $name,
+        $email,
+        $phone ?: 'Không có',
+        $message
     );
     $headers = array(
         'Content-Type: text/plain; charset=UTF-8',
@@ -298,11 +320,50 @@ function vuecommerce_handle_contact($request) {
 }
 
 /**
+ * Register REST API endpoint for Newsletter Subscription
+ */
+function vuecommerce_register_newsletter_endpoint() {
+    register_rest_route('vuecommerce/v1', '/subscribe', array(
+        'methods'             => 'POST',
+        'callback'            => 'vuecommerce_handle_newsletter',
+        'permission_callback' => '__return_true',
+        'args'                => array(
+            'email' => array('required' => true, 'sanitize_callback' => 'sanitize_email'),
+        ),
+    ));
+}
+add_action('rest_api_init', 'vuecommerce_register_newsletter_endpoint');
+
+/**
+ * Handle Newsletter Subscription
+ */
+function vuecommerce_handle_newsletter($request) {
+    $email = $request->get_param('email');
+
+    if (!is_email($email)) {
+        return new WP_Error('invalid_email', 'Email không hợp lệ', array('status' => 400));
+    }
+
+    // You can integrate Mailchimp here or just send email to admin
+    $to            = get_option('admin_email');
+    $email_subject = '[VueCommerce] Đăng ký nhận bản tin mới';
+    $email_body    = "Có người vừa đăng ký nhận bản tin với email: " . $email;
+    $headers       = array('Content-Type: text/plain; charset=UTF-8');
+
+    wp_mail($to, $email_subject, $email_body, $headers);
+
+    return array(
+        'success' => true,
+        'message' => 'Đăng ký nhận bản tin thành công!',
+    );
+}
+
+/**
  * Add Module type to script tag for Vite
  */
 function vuecommerce_script_module_type($tag, $handle, $src) {
-    if ($handle === 'vuecommerce-app') {
-        $tag = '<script type="module" src="' . esc_url($src) . '" id="vuecommerce-app-js"></script>';
+    if (in_array($handle, array('vuecommerce-app', 'vite-client'), true)) {
+        $tag = '<script type="module" src="' . esc_url($src) . '" id="' . esc_attr($handle) . '-js"></script>';
     }
     return $tag;
 }
@@ -380,7 +441,7 @@ add_action('wp_enqueue_scripts', 'vuecommerce_dequeue_wc_scripts', 20);
  * Extend REST API - Add featured image URL to posts
  */
 function vuecommerce_rest_featured_image($data, $post, $context) {
-    $featured_img_url = get_the_post_thumbnail_url($post->ID, 'post-thumb');
+    $featured_img_url                 = get_the_post_thumbnail_url($post->ID, 'post-thumb');
     $data->data['featured_image_url'] = $featured_img_url ?: '';
     return $data;
 }
@@ -388,7 +449,11 @@ add_filter('rest_prepare_post', 'vuecommerce_rest_featured_image', 10, 3);
 
 /**
  * Register REST API proxy endpoint for YouTube
- * Hides YOUTUBE_API_KEY on server side, Vue calls /wp-json/vuecommerce/v1/youtube
+ * Ẩn API key phía server, Vue gọi /wp-json/vuecommerce/v1/youtube
+ *
+ * Cấu hình trong wp-config.php:
+ *   define('YOUTUBE_API_KEY', 'your-new-key');
+ *   define('YOUTUBE_CHANNEL_ID', 'UUxxxxxxxxxxxxxxxx'); // ID playlist "uploads" (bắt đầu bằng UU)
  */
 function vuecommerce_register_youtube_endpoint() {
     register_rest_route('vuecommerce/v1', '/youtube', array(
@@ -396,9 +461,14 @@ function vuecommerce_register_youtube_endpoint() {
         'callback'            => 'vuecommerce_youtube_proxy',
         'permission_callback' => '__return_true',
         'args'                => array(
-            'pageToken' => array(
+            'pageToken'  => array(
                 'required'          => false,
                 'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'maxResults' => array(
+                'required'          => false,
+                'default'           => 10,
+                'sanitize_callback' => 'absint',
             ),
         ),
     ));
@@ -409,28 +479,34 @@ add_action('rest_api_init', 'vuecommerce_register_youtube_endpoint');
  * YouTube proxy callback
  */
 function vuecommerce_youtube_proxy($request) {
-    $api_key    = defined('YOUTUBE_API_KEY') ? YOUTUBE_API_KEY : get_option('vuecommerce_youtube_api_key', 'AIzaSyBFpbLU1xhVOLzd2LSF73HDxr3VvvxWFeg');
-    $channel_id = defined('YOUTUBE_CHANNEL_ID') ? YOUTUBE_CHANNEL_ID : get_option('vuecommerce_youtube_channel_id', 'UUoXst0FTqCB7K52dU47cGqw');
+    $api_key    = defined('YOUTUBE_API_KEY') ? YOUTUBE_API_KEY : get_option('vuecommerce_youtube_api_key', '');
+    $channel_id = defined('YOUTUBE_CHANNEL_ID') ? YOUTUBE_CHANNEL_ID : get_option('vuecommerce_youtube_channel_id', '');
     $page_token = $request->get_param('pageToken');
     $per_page   = intval($request->get_param('maxResults') ?: 10);
-    $per_page   = max(1, min(50, $per_page)); // clamp 1-50
+    $per_page   = max(1, min(50, $per_page)); // giới hạn 1-50
 
-    if (empty($api_key)) {
+    if (empty($api_key) || empty($channel_id)) {
         return new WP_Error(
             'missing_api_key',
-            'YouTube API key chưa được cấu hình.',
+            'YouTube API key hoặc Channel ID chưa được cấu hình.',
             array('status' => 500)
         );
+    }
+
+    // Cache 10 phút để tiết kiệm quota YouTube API
+    $cache_key = 'vc_yt_' . md5($channel_id . '|' . $page_token . '|' . $per_page);
+    $cached    = get_transient($cache_key);
+    if ($cached !== false) {
+        return rest_ensure_response($cached);
     }
 
     $url = add_query_arg(
         array_filter(array(
             'key'        => $api_key,
-            'playlistId'  => $channel_id,
-            'part'       => 'snippet,id',
+            'playlistId' => $channel_id,
+            'part'       => 'snippet,contentDetails',
             'maxResults' => $per_page,
             'pageToken'  => $page_token ?: null,
-            'type'       => 'video',
         )),
         'https://www.googleapis.com/youtube/v3/playlistItems'
     );
@@ -445,9 +521,11 @@ function vuecommerce_youtube_proxy($request) {
     $data = json_decode($body, true);
 
     if (empty($data) || isset($data['error'])) {
-        $msg = $data['error']['message'] ?? 'Lỗi không xác định từ YouTube API.';
+        $msg = isset($data['error']['message']) ? $data['error']['message'] : 'Lỗi không xác định từ YouTube API.';
         return new WP_Error('youtube_api_error', $msg, array('status' => 502));
     }
+
+    set_transient($cache_key, $data, 10 * MINUTE_IN_SECONDS);
 
     return rest_ensure_response($data);
 }

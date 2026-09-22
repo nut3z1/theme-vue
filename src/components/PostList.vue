@@ -101,6 +101,7 @@ const { posts, loading, error, totalPages, currentPage, hasPosts, fetchPosts } =
 
 const wpData = window.wpVueTheme || {};
 const restUrl = wpData.restUrl || '/wp-json/';
+const excludeCatId = wpData.excludeCatId || 0;
 
 const searchQuery = ref('');
 const selectedCategory = ref('');
@@ -126,9 +127,11 @@ function goToPage(page) {
 
 async function fetchCategories() {
   try {
-    const res = await axios.get(`${restUrl}wp/v2/categories`, {
-      params: { hide_empty: true }
-    });
+    const params = { hide_empty: true };
+    if (excludeCatId) {
+      params.exclude = excludeCatId;
+    }
+    const res = await axios.get(`${restUrl}wp/v2/categories`, { params });
     categories.value = res.data;
   } catch (err) {
     console.error('Failed to fetch post categories:', err);

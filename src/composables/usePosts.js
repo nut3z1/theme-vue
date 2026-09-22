@@ -15,6 +15,7 @@ export function usePosts() {
   const currentPage = ref(1);
 
   const restUrl = window.wpVueTheme?.restUrl || '/wp-json/';
+  const excludeCatId = window.wpVueTheme?.excludeCatId || 0;
 
   /**
    * Fetch posts list
@@ -24,16 +25,22 @@ export function usePosts() {
     error.value = null;
 
     try {
+      const apiParams = {
+        per_page: params.perPage || 9,
+        page: params.page || 1,
+        search: params.search || undefined,
+        categories: params.category || undefined,
+        orderby: params.orderby || 'date',
+        order: params.order || 'desc',
+        _embed: true,
+      };
+
+      if (excludeCatId && !params.category) {
+        apiParams.categories_exclude = excludeCatId;
+      }
+
       const response = await axios.get(`${restUrl}wp/v2/posts`, {
-        params: {
-          per_page: params.perPage || 9,
-          page: params.page || 1,
-          search: params.search || undefined,
-          categories: params.category || undefined,
-          orderby: params.orderby || 'date',
-          order: params.order || 'desc',
-          _embed: true,
-        },
+        params: apiParams,
       });
 
       posts.value = response.data.map(formatPost);
@@ -56,13 +63,19 @@ export function usePosts() {
     error.value = null;
 
     try {
+      const apiParams = {
+        per_page: limit,
+        orderby: 'date',
+        order: 'desc',
+        _embed: true,
+      };
+
+      if (excludeCatId) {
+        apiParams.categories_exclude = excludeCatId;
+      }
+
       const response = await axios.get(`${restUrl}wp/v2/posts`, {
-        params: {
-          per_page: limit,
-          orderby: 'date',
-          order: 'desc',
-          _embed: true,
-        },
+        params: apiParams,
       });
 
       posts.value = response.data.map(formatPost);

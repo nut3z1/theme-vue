@@ -22,10 +22,10 @@
           class="w-full h-full object-cover rounded-t-[12px]"
           loading="lazy"
           height="200"
-          src="https://images.hdradio.vn/banner/t9-2026/ctkm-t9/treo-web/ctkm-t9-treo-web-3.jpg"
+          :src="topImg"
         />
         <!-- Swiper -->
-        <div class="bg-[#df0506] rounded-b-[12px] p-4">
+        <div class="bg-[#980106] rounded-b-[12px] p-4">
           <div
             ref="swiperContainer"
             class="swiper product-swiper group/swiper relative"
@@ -86,19 +86,25 @@
                       {{ product.name }}
                     </h3>
                     <div class="flex items-center gap-1.5">
-                      <template v-if="!product.price || Number(product.price) === 0">
-                        <span class="text-base font-bold text-red-500">Liên hệ</span>
+                      <template
+                        v-if="!product.price || Number(product.price) === 0"
+                      >
+                        <span class="text-base font-bold text-red-500"
+                          >Liên hệ</span
+                        >
                       </template>
                       <template v-else>
                         <span
                           class="text-base font-bold"
                           :class="
-                            product.onSale ? 'text-secondary-400' : 'text-dark-50'
+                            product.onSale
+                              ? 'text-secondary-400'
+                              : 'text-dark-50'
                           "
                         >
                           {{
                             formatPrice(
-                              product.onSale ? product.salePrice : product.price,
+                              product.onSale ? product.salePrice : product.price
                             )
                           }}
                         </span>
@@ -122,7 +128,7 @@
                           />
                           <span>Gọi ngay để nhận giá tốt nhất</span>
                         </li>
-                        <li class="text-xs  flex items-center gap-2">
+                        <li class="text-xs flex items-center gap-2">
                           <img
                             alt="hot-product"
                             width="16"
@@ -185,7 +191,7 @@
             class="w-full h-full rounded-[10px] object-cover"
             loading="lazy"
             height="200"
-            src="https://images.hdradio.vn/banner/t9-2026/ctkm-t9/treo-web/ctkm-t9-treo-web-5.jpg"
+            :src="bottomImg"
           />
         </div>
       </div>
@@ -216,6 +222,15 @@ const loading = ref(true);
 const swiperContainer = ref(null);
 const prevBtn = ref(null);
 const nextBtn = ref(null);
+
+const homeUrl = wpData.homeUrl || "/";
+const topImg =
+  homeUrl +
+  "/wp-content/uploads/2026/09/115e9cd0-261d-4249-821e-238a33d1d5fd.jpg";
+
+const bottomImg =
+  homeUrl +
+  "wp-content/uploads/2026/09/afa60e19-ab72-4f06-a915-2ee8ba4477ac.jpg";
 
 function formatPrice(price, symbol = "₫") {
   if (!price && price !== 0) return "";

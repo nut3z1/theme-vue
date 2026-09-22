@@ -46,6 +46,32 @@ export function useYoutube() {
   }
 
   /**
+   * Fetch videos from the proxy endpoint and append them (for Load More)
+   */
+  async function loadMoreVideos(maxResults = 10) {
+    if (!nextPageToken.value || loading.value) return;
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const params = { maxResults, pageToken: nextPageToken.value };
+      const response = await axios.get(`${restUrl}vuecommerce/v1/youtube`, { params });
+      const data = response.data;
+
+      const newVideos = (data.items || []).map(formatVideo);
+      videos.value = [...videos.value, ...newVideos];
+      nextPageToken.value = data.nextPageToken || null;
+      prevPageToken.value = data.prevPageToken || null;
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Không thể tải thêm video. Vui lòng thử lại.';
+      error.value = msg;
+      console.error('[useYoutube] loadMoreVideos failed:', err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  /**
    * Go to next page
    */
   async function nextPage(maxResults = 10) {
@@ -110,6 +136,7 @@ export function useYoutube() {
     hasNext,
     hasPrev,
     fetchVideos,
+    loadMoreVideos,
     nextPage,
     prevPage,
   };
